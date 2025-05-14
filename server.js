@@ -1,25 +1,41 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import helmet from "helmet"; // Security headers
-import compression from "compression"; // Gzip compression
+import helmet from "helmet";
+import compression from "compression";
+import path from "path";
+import { fileURLToPath } from "url";
 import MainAllRoutes from "./routes/All_routes.js";
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Get __dirname in ES Module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Middleware
 app.use(cors({
-  origin: "http://localhost:3000", // 🔥 Allow all origins for now (for production, replace * with your frontend URL)
+  origin: process.env.CLIENT_URL || "http://localhost:3000",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
-app.use(helmet()); // 🔒 Secure HTTP headers
-app.use(compression()); // ⚡ Compress responses
-app.use(express.json({ limit: "10mb" })); // 🛡 Limit large requests
+app.use(helmet());
+app.use(compression());
+app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // API Routes
 app.use("/api", MainAllRoutes);
+
+// Serve frontend static files (if deployed together)
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "client/build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 // 404 Handler
 app.use((req, res, next) => {
