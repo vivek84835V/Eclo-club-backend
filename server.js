@@ -16,7 +16,7 @@ const __dirname = path.dirname(__filename);
 
 // Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:3000",
+  origin: process.env.CLIENT_URL || "https://eco-club-store-if58.vercel.app/",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
@@ -30,11 +30,11 @@ app.use("/api", MainAllRoutes);
 
 // Serve frontend static files (if deployed together)
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "client/build")));
+  app.use(express.static(path.join(__dirname, "../client/build")));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-  });
+  res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
+});
 }
 
 // 404 Handler
@@ -50,5 +50,6 @@ app.use((err, req, res, next) => {
 
 // Server Start
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  // console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
