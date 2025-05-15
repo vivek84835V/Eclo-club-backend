@@ -2,9 +2,12 @@ import admin from 'firebase-admin';
 
 const serviceAccountStr = process.env.FIREBASE_SERVICE_ACCOUNT;
 
-// Replace the placeholder @ with real newline \n before parsing
+if (!serviceAccountStr) {
+  throw new Error("❌ FIREBASE_SERVICE_ACCOUNT env variable is missing.");
+}
+
 const serviceAccount = JSON.parse(
-  serviceAccountStr.replace(/@/g, '\n')
+  serviceAccountStr.replace(/@/g, '\n') // replace all @ with newline
 );
 
 if (!admin.apps.length) {
