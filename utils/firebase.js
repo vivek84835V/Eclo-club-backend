@@ -1,7 +1,7 @@
 import admin from 'firebase-admin';
 
 const serviceAccount = JSON.parse(
-  process.env.FIREBASE_SERVICE_ACCOUNT.replace(/\\n/g, '\n') // Correctly replaces \\n with real newlines
+  process.env.FIREBASE_SERVICE_ACCOUNT,
 );
 
 if (!admin.apps.length) {
