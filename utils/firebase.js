@@ -4,7 +4,7 @@ const serviceAccountStr = process.env.FIREBASE_SERVICE_ACCOUNT;
 
 // Replace the placeholder @ with real newline \n before parsing
 const serviceAccount = JSON.parse(
-  serviceAccountStr
+  serviceAccountStr.replace(/@/g, '\n')
 );
 
 if (!admin.apps.length) {
