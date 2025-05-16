@@ -1,16 +1,23 @@
-import admin from 'firebase-admin';
+import admin from "firebase-admin";
 
-const base64ServiceAccount = process.env.FIREBASE_SERVICE_ACCOUNTS;
+// Decode Base64 string from environment variable
+const serviceAccountBase64 = process.env.FIREBASE_SERVICE_ACCOUNTS;
 
-if (!base64ServiceAccount) {
-  throw new Error("❌ FIREBASE_SERVICE_ACCOUNTS is missing.");
+if (!serviceAccountBase64) {
+  throw new Error("FIREBASE_SERVICE_ACCOUNTS is not defined");
 }
 
-const serviceAccount = JSON.parse(Buffer.from(base64ServiceAccount, 'base64').toString('utf-8'));
+let serviceAccount;
+try {
+  const serviceAccountJson = Buffer.from(serviceAccountBase64, "base64").toString("utf8");
+  serviceAccount = JSON.parse(serviceAccountJson);
+} catch (err) {
+  throw new Error("Failed to decode Firebase service account: " + err.message);
+}
 
+// Initialize Firebase Admin
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
-
 
 export default admin;
