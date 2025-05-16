@@ -1,10 +1,14 @@
-import admin from 'firebase-admin';
-import serviceAccount from './firebase-service-account.json' assert { type: 'json' };
+const base64ServiceAccount = process.env.FIREBASE_SERVICE_ACCOUNTS;
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
+if (!base64ServiceAccount) {
+  throw new Error("❌ FIREBASE_SERVICE_ACCOUNT is missing.");
 }
 
-export default admin;
+const serviceAccount = JSON.parse(Buffer.from(base64ServiceAccount, 'base64').toString('utf-8'));
+
+// Firebase Admin initialization
+import admin from 'firebase-admin';
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
